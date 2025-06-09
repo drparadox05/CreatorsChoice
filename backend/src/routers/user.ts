@@ -1,5 +1,4 @@
 import nacl from "tweetnacl";
-import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import jwt from "jsonwebtoken";
@@ -10,7 +9,9 @@ import { taskInput } from "../types";
 import { Connection, PublicKey } from "@solana/web3.js";
 import express from "express";
 import dotenv from "dotenv";
+import prisma from "../utils/prisma";
 dotenv.config();
+
 
 const PARENT_WALLET_ADDRESS = process.env.PARENT_WALLET_ADDRESS;
 const connection = new Connection(process.env.RPC_URL ?? "");    
@@ -27,9 +28,8 @@ const s3Client = new S3Client({
 
 const router = Router();
 router.use(express.json());
-const prismaClient = new PrismaClient();
 
-prismaClient.$transaction(
+prisma.$transaction(
     async (prisma) => {
     },
     {
@@ -44,7 +44,7 @@ router.get("/task", authMiddleware, async (req, res) => {
     // @ts-ignore
     const userId: string = req.userId;
 
-    const taskDetails = await prismaClient.task.findFirst({
+    const taskDetails = await prisma.task.findFirst({
         where: {
             user_id: Number(userId),
             id: Number(taskId)
@@ -60,7 +60,7 @@ router.get("/task", authMiddleware, async (req, res) => {
         })
     }
 
-    const responses = await prismaClient.submission.findMany({
+    const responses = await prisma.submission.findMany({
         where: {
             task_id: Number(taskId)
         },
@@ -101,7 +101,7 @@ router.post("/task", authMiddleware, async (req, res) => {
     const userId = req.userId
     const body = req.body;
     const parseData = taskInput.safeParse(body);
-    const user = await prismaClient.user.findFirst({
+    const user = await prisma.user.findFirst({
         where: {
             id: userId
         }
@@ -143,7 +143,7 @@ router.post("/task", authMiddleware, async (req, res) => {
         })
     }
 
-    let response = await prismaClient.$transaction(async tx => {
+    let response = await prisma.$transaction(async tx => {
 
         const response = await tx.task.create({
             data: {
@@ -204,7 +204,7 @@ router.post("/signin", async(req, res) => {
         })
     }
 
-    const existingUser = await prismaClient.user.findFirst({
+    const existingUser = await prisma.user.findFirst({
         where: {
             address: publicKey
         }
@@ -219,7 +219,7 @@ router.post("/signin", async(req, res) => {
             token
         })
     } else {
-        const user = await prismaClient.user.create({
+        const user = await prisma.user.create({
             data: {
                 address: publicKey,
             }

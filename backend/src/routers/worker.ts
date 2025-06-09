@@ -1,5 +1,4 @@
 import nacl from "tweetnacl";
-import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { workerMiddleware } from "../middleware";
@@ -9,6 +8,7 @@ import { submissionInput } from "../types";
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
 import { decode } from "bs58";
 import dotenv from "dotenv";
+import prisma from "../utils/prisma";
 dotenv.config();
 
 const PARENT_WALLET_ADDRESS = process.env.PARENT_WALLET_ADDRESS;
@@ -23,9 +23,8 @@ if (!SOLANA_PRIVATE_KEY){
 }
 
 const TOTAL_SUBMISSIONS = 100;
-const prismaClient = new PrismaClient();
 
-prismaClient.$transaction(
+prisma.$transaction(
     async (prisma) => {
     },
     {
@@ -39,7 +38,7 @@ const router = Router();
 router.post("/payout", workerMiddleware, async (req, res) => {
     // @ts-ignore
     const userId: string = req.userId;
-    const worker = await prismaClient.worker.findFirst({
+    const worker = await prisma.worker.findFirst({
         where: { id: Number(userId) }
     })
 
@@ -73,7 +72,7 @@ router.post("/payout", workerMiddleware, async (req, res) => {
         })
      }
     
-    await prismaClient.$transaction(async tx => {
+    await prisma.$transaction(async tx => {
         await tx.worker.update({
             where: {
                 id: Number(userId)
@@ -110,7 +109,7 @@ router.get("/balance", workerMiddleware, async (req, res) => {
     // @ts-ignore
     const userId: string = req.userId;
 
-    const worker = await prismaClient.worker.findFirst({
+    const worker = await prisma.worker.findFirst({
         where: {
             id: Number(userId)
         }
@@ -139,7 +138,7 @@ router.post("/submission", workerMiddleware, async (req, res) => {
 
         const amount = (Number(task.amount) / TOTAL_SUBMISSIONS).toString();
 
-        const submission = await prismaClient.$transaction(async tx => {
+        const submission = await prisma.$transaction(async tx => {
             const submission = await tx.submission.create({
                 data: {
                     option_id: Number(parsedBody.data.selection),
@@ -212,7 +211,7 @@ router.post("/signin", async(req, res) => {
         })
     }
 
-    const existingUser = await prismaClient.worker.findFirst({
+    const existingUser = await prisma.worker.findFirst({
         where: {
             address: publicKey
         }
@@ -228,7 +227,7 @@ router.post("/signin", async(req, res) => {
             amount: existingUser.pending_amount / TOTAL_DECIMALS
         })
     } else {
-        const user = await prismaClient.worker.create({
+        const user = await prisma.worker.create({
             data: {
                 address: publicKey,
                 pending_amount: 0,
