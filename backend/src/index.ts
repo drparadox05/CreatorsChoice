@@ -13,6 +13,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (req, res) => {
+  res.send('Backend is running!');
+});
+
 app.use("/v1/user", userRouter);
 app.use("/v1/worker", workerRouter);
 
