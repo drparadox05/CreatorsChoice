@@ -29,14 +29,6 @@ const s3Client = new S3Client({
 const router = Router();
 router.use(express.json());
 
-prisma.$transaction(
-    async (prisma) => {
-    },
-    {
-      maxWait: 5000,
-      timeout: 10000,
-    }
-)
 
 router.get("/task", authMiddleware, async (req, res) => {
     // @ts-ignore
@@ -184,7 +176,10 @@ router.get("/presignedUrl", authMiddleware, async (req, res) => {
         Fields: { 'Content-Type': 'image/png' },
         Expires: 3600
     })
-    
+    res.json({
+        url,
+        fields
+    });
 })
 
 router.post("/signin", async(req, res) => {

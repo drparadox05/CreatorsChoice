@@ -23,16 +23,6 @@ if (!SOLANA_PRIVATE_KEY){
 }
 
 const TOTAL_SUBMISSIONS = 100;
-
-prisma.$transaction(
-    async (prisma) => {
-    },
-    {
-      maxWait: 5000,
-      timeout: 10000,
-    }
-)
-
 const router = Router();
 
 router.post("/payout", workerMiddleware, async (req, res) => {

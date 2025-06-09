@@ -1,6 +1,7 @@
-import prisma from "./utils/prisma";
+import { PrismaClient } from "@prisma/client";
 
 export const getNextTask = async (userId: number) => {
+    const prisma = new PrismaClient();
     const task = await prisma.task.findFirst({
         where: {
             done: false,
