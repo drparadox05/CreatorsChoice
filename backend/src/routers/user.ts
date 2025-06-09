@@ -18,8 +18,8 @@ const DEFAULT_TITLE = "Select the most clickable thumbnail";
 
 const s3Client = new S3Client({
     credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY ?? "",
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
+        accessKeyId: process.env.MY_AWS_ACCESS_KEY ?? "",
+        secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY ?? "",
     },
     region: 'ap-south-1',
     
