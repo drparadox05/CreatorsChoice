@@ -1,8 +1,8 @@
 import express from "express";
 import serverless from "serverless-http";
 import cors from 'cors';
-import userRouter from "./routers/user";  
-import workerRouter from "./routers/worker";
+import userRouter from "../src/routers/user";  
+import workerRouter from "../src/routers/worker";
 
 const app = express();
 app.use(cors());
