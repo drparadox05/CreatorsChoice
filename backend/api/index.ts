@@ -6,25 +6,25 @@ import cors from 'cors';
 
 console.log("Creating Express app...");
 const app = express();
-app.use(cors());
-app.use(express.json());
+// app.use(cors());
+// app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
-  console.log("-------------------------");
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`${req.method} ${req.path}`);
+//   console.log("-------------------------");
+//   next();
+// });
 
 
 app.get('/ping', (req, res) => {
   console.log("ping Route hit!");
-  res.send('pong');
+  res.json({ message: 'pong', timestamp: new Date().toISOString() });
 });
 
 
 app.get("/", (req, res) => {
   console.log("Route hit!");
-    res.send("Backend is running!");
+  res.json({ message: "Backend is running!", timestamp: new Date().toISOString() });
 });
 
 
