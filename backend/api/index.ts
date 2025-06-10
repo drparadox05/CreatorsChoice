@@ -1,8 +1,8 @@
 import express from "express";
 import serverless from "serverless-http";
 import cors from 'cors';
-import userRouter from "../src/routers/user";  
-import workerRouter from "../src/routers/worker";
+// import userRouter from "../src/routers/user";  
+// import workerRouter from "../src/routers/worker";
 
 console.log("Creating Express app...");
 const app = express();
@@ -35,8 +35,8 @@ if (process.env.VERCEL_ENV !== 'production') {
   });
 }
 
-app.use("/v1/user", userRouter);
-app.use("/v1/worker", workerRouter);
+// app.use("/v1/user", userRouter);
+// app.use("/v1/worker", workerRouter);
 
 console.log("App configured, exporting...");
 export default serverless(app);
