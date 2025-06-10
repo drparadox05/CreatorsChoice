@@ -18,17 +18,22 @@ app.use((req, res, next) => {
 
 app.get('/ping', (req, res) => {
   console.log("ping Route hit!");
-  res.status(200).json({ message: 'ping endpoint working' });
-//   res.send('pong');
+  res.send('pong');
 });
 
 
 app.get("/", (req, res) => {
   console.log("Route hit!");
-  res.status(200).json({ message: 'Backend working' });
-  //   res.send("Backend is running!");
+    res.send("Backend is running!");
 });
 
+
+if (process.env.VERCEL_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Local server running on http://localhost:${PORT}`);
+  });
+}
 
 app.use("/v1/user", userRouter);
 app.use("/v1/worker", workerRouter);
