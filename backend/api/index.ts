@@ -25,4 +25,14 @@ app.get('/', (req, res) => {
 // app.use("/v1/worker", workerRouter);
 
 console.log("App configured, exporting...");
-export default serverless(app);
+// export default serverless(app);
+
+export default serverless(app, {
+  binary: false,
+  request: (request: any, event: any, context: any) => {
+    console.log("Request intercepted");
+  },
+  response: (response: any, event: any, context: any) => {
+    console.log("Response intercepted");
+  }
+});
